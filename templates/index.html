@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sign up now!</title>
+    <style media="screen">
+        label{
+            display: block;
+            width: 300px;
+            text-align: right;
+        }
+        fieldset{
+            display: inline;
+        }
+        .errors{
+            color: red;
+        }
+        .success{
+            color: green;
+        }
+	</style>
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flashes">
+            {% for category, message in messages %}
+            <li class="{{category}}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {%endif%}
+    {%endwith%}
+    <h1>Register!</h1>
+    <form action="/register" method="POST">
+        <fieldset>
+            <legend>Register</legend>
+            <label>First Name:
+                <input type="text" name="first_name">
+            </label>
+            <label>Last Name:
+                <input type="text" name="last_name">
+            </label>
+            <label>Email:
+                <input type="text" name="email">
+            </label>
+            <label>Password:
+                <input type="password" name="password">
+            </label>
+            <label>Confirm Password:
+                <input type="password" name="passconf">
+            </label>
+            <input type="submit" value="Register">
+        </fieldset>
+	</form>
+
+    <form action="/login" method="POST">
+			<fieldset>
+				<legend>Login</legend>
+				<label>Email:
+					<input type="text" name="email">
+				</label>
+				<label>Password:
+					<input type="password" name="password">
+				</label>
+				<input type="submit" value="Login">
+			</fieldset>
+		</form>
+</body>
+</html>

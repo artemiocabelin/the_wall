@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Success</title>
+    <style>
+        .success {
+            color: green;
+        }
+
+        .errors {
+            color: red;
+        }
+
+        #header {
+            /*background: blue;*/
+            width: 97%;
+            height: 20%;
+            margin: 0 auto;
+            border-bottom: 1px solid black;
+        }
+
+        .sub_head {
+            display: inline-block;
+        }
+
+        #user_welcome {
+            margin-left: 66%;
+        }
+
+        #log_off {
+            margin-left: 2%;
+        }
+
+        .submit_post {
+            display: block;
+            margin-left: 86%;
+        }
+
+        #post_form_wrap {
+            /* background: yellow; */
+            width: 55%;
+            margin: 10px auto;
+        }
+
+        .message_wrap {
+            width: 84%;
+            margin: 0 auto;
+        }
+
+        .post_wrap {
+            width: 95%;
+            margin: 0 auto;
+        }
+
+        .comment_form_wrap {
+            width: 71%;
+            /*background: blue;*/
+            margin: 0 auto;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .title_new_comment {
+            margin-top: 1%;
+        }
+
+        .comment_wrap {
+            width: 70%;
+            margin: 0 auto;
+        }
+
+        .sub_wrap {
+            width: 97%;
+            margin: 0 auto;
+            font-size: 13px;
+        }
+
+        .user_wrap {
+            margin-bottom: 1%;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="header">
+        <h1 class="sub_head" id="head_title">Coding Dojo Wall</h1>
+        <p class="sub_head" id="user_welcome">Welcome, {{ user_data[0]['first_name']}}</p>
+        <a class="sub_head" id="log_off"href="/logout">logoff</a>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+			<ul class="flashes">
+			{% for category, message in messages %}
+				<li class="{{ category }}">{{ message }}</li>
+			{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+    <fieldset id="post_form_wrap">
+        <legend>Post a message</legend>
+        <form action="/new_post" method="post">
+        <textarea name="new_post" id="new_post" cols="120" rows="10"></textarea>
+        <input class="submit_post" type="submit" value="Post a message">
+        </form>
+    </fieldset>
+
+    {% for post in the_wall %}
+    {{post}}
+    <div class="message_wrap">
+        <h4 class="user_wrap">{{ post['first_name'] }} {{ post['last_name'] }} - {{ post['created_at'] }}</h4>
+        <p class="post_wrap"> {{ post['content']}}</p>
+        {% if post['user_id'] == session['user_id'] %}
+            <form action="/delete_post" method="post">
+                <input type="hidden" name="delete" value="{{ post['id'] }}">
+                <input type="hidden" name="post_time" value="{{ post['actual_time'] }}">
+                <input type="submit" value="Delete">
+            </form>
+        {% endif %}
+    </div>
+    
+
+        {% for comment in the_string %}
+            {% if comment['message_id'] == post['id']%}
+                <div class="comment_wrap">
+                    <h5 class="user_wrap">{{ comment['first_name'] }} {{ comment['last_name'] }} - {{ comment['created_at'] }}</h5>
+                    <p class="sub_wrap"> {{ comment['content'] }}
+                    </p>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+    <form action="/new_comment" method="post" class="comment_form_wrap">
+        <input type="hidden" name="message_id" value="{{ post['id'] }}">
+        <h5 class="title_new_comment">Post a comment</h5>
+        <textarea name="new_comment" id="new_comment" cols="143" rows="5"></textarea>
+        <input type="submit" class="submit_post" value="Post a comment">
+    </form>
+    {% endfor %}
+
+</body>
+</html>
